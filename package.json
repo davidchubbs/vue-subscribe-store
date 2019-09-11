@@ -20,7 +20,14 @@
     "test": "NODE_ENV=test mocha --recursive --require @babel/register src/**/test/*.js",
     "build": "webpack"
   },
-  "keywords": [],
+  "keywords": [
+    "vue",
+    "vuejs",
+    "vuex",
+    "svelte",
+    "svelte-store",
+    "state"
+  ],
   "author": {
     "name": "David Chubbs",
     "email": "davidchubbuck@gmail.com",
