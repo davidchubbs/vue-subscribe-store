@@ -1,13 +1,13 @@
 
-import vueState from '../../dist/index.js' // TODO - replace with npm package
+import vuesub from 'vue-subscribe-store'
 import {
   writable,
   derived
 } from 'svelte/store'
 
-Vue.use(vueState)
+Vue.use(vuesub)
 
-const store = vueState.store({
+const store = vuesub.store({
   state: {
     num: writable(0),
     label: writable('')
