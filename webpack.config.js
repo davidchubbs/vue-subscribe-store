@@ -5,7 +5,7 @@ module.exports = {
   entry: './src/index.js',
   output: {
     filename: 'index.js',
-    library: 'vueSubscribeState',
+    library: 'vuesub',
     libraryTarget:'umd',
     path: path.resolve(__dirname, 'dist')
   },
