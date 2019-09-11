@@ -33,6 +33,7 @@
     "email": "davidchubbuck@gmail.com",
     "url": "https://github.com/davidchubbs"
   },
+  "homepage": "https://github.com/davidchubbs/vue-subscribe-store",
   "repository": {
     "type": "git",
     "url": "git://github.com/davidchubbs/vue-subscribe-store.git"
