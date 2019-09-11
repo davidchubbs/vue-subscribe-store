@@ -2,7 +2,7 @@
 
 ## Why?
 
-1. You can now use any store that returns `subscribe` methods, such as svelte-store, with Vue.js. This package will subscribe to state changes and offer it to Vue in a way that's reactive.
+1. Use any store that uses a `subscribe` method, such as svelte-store, with Vue.js. This package will subscribe to state changes and offer it to Vue in a way that's reactive.
 
 2. (Optional) Offers the same API as Vuex, so it's easy to convert vuex modules into another store type. This is optional&mdash;you could just offer a map of state and have a separate system for updating state. See examples for details.
 
@@ -19,19 +19,23 @@ const {
   mapMutations
 } = vuesub.store({
   state: {
-    value: writable(0)
+    value: writable(0), // writable() returns { subscribe }
+    foo: 'treated as a static value'
   },
   mutators: {
     setValue(state, next) {
-      state.set(next)
+      // receive `state` as is; since we're using svelte-store,
+      // writable objects have a .set method
+      state.value.set(next)
     },
     resetValue(state) {
-      state.set(0)
+      state.value.set(0)
     }
   }
 })
 
 Vue.component('example', {
+  // integrates `value` in a way that works with vue's reactivity model
   computed: mapState(['value']),
   methods: mapMutations(['setValue', 'resetValue']),
   template: `
@@ -45,9 +49,11 @@ Vue.component('example', {
 })
 ```
 
-`map*` offers the same API as Vuex, either `['name']` or `{ compName: 'storeName' }`. Currently no support for sub-modules, so `mapActions('moduleName', ['name'])` would not work.
+`map*` offers the same API as Vuex, either `['name']` or `{ rename: 'name' }`. Currently no support for sub-modules, so `mapActions('moduleName', ['name'])` would not work.
 
-`Vue.use()` will add `this.$store` to your vue components.
+`Vue.use()` will add `this.$store` to your vue components. It's schema is the same as vuex.
+
+For example:
 
 ```js
 Vue.component('example', {
@@ -113,7 +119,7 @@ const {
   },
   mutators: {
     setValue(state, next) {
-      state.set(next)
+      state.value.set(next)
     }
   },
   actions: {
@@ -131,10 +137,15 @@ Vue.component('example', {
     ...mapState(['value']),
     ...mapGetters(['isEven'])
   },
-  methods: mapActions(['empty', 'change']),
+  methods: {
+    ...mapActions(['empty', 'change']),
+    inc() {
+      this.change(this.value + 1)
+    }
+  },
   template: `
   <div>
-    <button @click="() => change(value + 1)">
+    <button @click="inc">
       {{ value }}
     </button>
     <button @click="empty">x</button>
