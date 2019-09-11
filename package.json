@@ -2,8 +2,14 @@
   "name": "vue-subscribe-store",
   "version": "0.1.0",
   "description": "Ability to integrate subscribable state into vue components",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/node": "^7.6.1",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/register": "^7.6.0",
+    "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "sinon": "^7.4.1",
@@ -11,7 +17,7 @@
     "webpack-cli": "^3.3.7"
   },
   "scripts": {
-    "test": "NODE_ENV=test mocha --recursive src/**/test/*.js",
+    "test": "NODE_ENV=test mocha --recursive --require @babel/register src/**/test/*.js",
     "build": "webpack"
   },
   "keywords": [],
@@ -32,6 +38,5 @@
       "type": "MIT",
       "url": "http://www.opensource.org/licenses/MIT"
     }
-  ],
-  "license": "ISC"
+  ]
 }

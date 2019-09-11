@@ -1,0 +1,13 @@
+{
+  "name": "vue-subscribe-store-demo",
+  "devDependencies": {
+    "webpack": "^4.39.2",
+    "webpack-cli": "^3.3.7"
+  },
+  "scripts": {
+    "build": "webpack"
+  },
+  "dependencies": {
+    "svelte": "^3.12.0"
+  }
+}

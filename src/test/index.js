@@ -1,6 +1,6 @@
-const { assert } = require('chai')
-const sinon = require('sinon')
-const lib = require('../index')
+import { assert } from 'chai'
+import sinon from 'sinon'
+import lib from '../index'
 
 describe('makeSubscribedState', () => {
   it('Should subscribe to subscribable state', () => {
@@ -128,7 +128,7 @@ describe('makeVueState', () => {
     assert.doesNotThrow(() => {
       lib.install({
         observable: values => values,
-        property: {}
+        prototype: {}
       })
       lib.makeVueState({})
     })
@@ -268,20 +268,20 @@ describe('reducer', () => {
 
 describe('install', () => {
   it('should add $store to prototype', () => {
-    const property = {}
+    const prototype = {}
     lib.install({
-      property
+      prototype
     })
-    assert(property.hasOwnProperty('$store'))
+    assert(prototype.hasOwnProperty('$store'))
   })
   it('should change the prototype name if custom name given', () => {
-    const property = {}
+    const prototype = {}
     lib.install({
-      property,
+      prototype,
     }, {
       name: 'custom'
     })
-    assert(property.hasOwnProperty('$custom'))
+    assert(prototype.hasOwnProperty('$custom'))
   })
 })
 
@@ -289,7 +289,7 @@ describe('store', () => {
   it('should return map functions when invoked', () => {
     lib.install({
       observable: values => values,
-      property: {}
+      prototype: {}
     })
     const store = lib.store({})
     assert.equal(typeof store, 'object')
@@ -301,22 +301,32 @@ describe('store', () => {
   it('should prepare state for vue', () => {
     const store = lib.store({
       state: {
-        foo: 'bar'
+        foo: { subscribe: cb => cb('bar') },
+        baz: 'qux'
       }
     })
-    const { foo } = store.mapState(['foo'])
+    const { foo, baz } = store.mapState(['foo', 'baz'])
     assert.equal(typeof foo, 'function')
+    assert.equal(typeof baz, 'function')
     assert.equal(foo(), 'bar')
+    assert.equal(baz(), 'qux')
   })
   it('should prepare getters for vue', () => {
     const store = lib.store({
       getters: {
-        foo: () => 'bar'
+        foo() {
+          return { subscribe: cb => cb('bar') }
+        },
+        baz() {
+          return 'qux'
+        }
       }
     })
-    const { foo } = store.mapGetters(['foo'])
+    const { foo, baz } = store.mapGetters(['foo', 'baz'])
     assert.equal(typeof foo, 'function')
+    assert.equal(typeof baz, 'function')
     assert.equal(foo(), 'bar')
+    assert.equal(baz(), 'qux')
   })
   it('should prepare mutators for vue', () => {
     let propsGiven = null

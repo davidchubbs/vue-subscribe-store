@@ -1,3 +1,4 @@
+'use strict'
 
 let _Vue = null
 const _store = {}
@@ -14,7 +15,7 @@ function store({
 
   const derived = makeDerivedState(state, getters)
   const derivedValues = makeSubscribedState(derived)
-  const vueDerived = makeVueState(derived)
+  const vueDerived = makeVueState(derivedValues)
   const mapGetters = reducer(vueDerived)
 
   const context = makeContext({
@@ -41,7 +42,7 @@ function store({
 function install(vue, ops = {}) {
   _Vue = vue
   const propName = ops.name || 'store'
-  vue.property[`$${propName}`] = _store
+  vue.prototype[`$${propName}`] = _store
 }
 
 // Makes an object with the values of the current state,
@@ -86,8 +87,8 @@ function makeDerivedState(state, fns) {
       }
     })
   }
-  for (let name in getters) getters[name]
-  return derived
+  // loops each getter - which invokes each getter function 1x & returns the derived value
+  return { ...getters }
 }
 
 // Make values of state observable to Vue, then wrap in functions
@@ -179,14 +180,16 @@ function reducer(obj) {
   }
 }
 
-if (process.env.NODE_ENV === 'test') {
-  exports.makeSubscribedState = makeSubscribedState
-  exports.makeDerivedState = makeDerivedState
-  exports.makeVueState = makeVueState
-  exports.wrapValues = wrapValues
-  exports.makeContext = makeContext
-  exports.bindContext = bindContext
-  exports.reducer = reducer
+export default {
+  store,
+  install,
+  ...(process.env.NODE_ENV === 'test' ? {
+    makeSubscribedState,
+    makeDerivedState,
+    makeVueState,
+    wrapValues,
+    makeContext,
+    bindContext,
+    reducer
+  } : {})
 }
-exports.store = store
-exports.install = install
